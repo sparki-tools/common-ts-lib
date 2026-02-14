@@ -1,0 +1,16 @@
+{
+  "name": "@sparki-tools/common",
+  "version": "0.0.1",
+  "description": "Shared TypeScript utilities for Sparki frontend",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "lint": "eslint src/"
+  },
+  "keywords": ["sparki", "utilities", "typescript"],
+  "author": "Sparki Team",
+  "license": "MIT",
+  "private": true
+}
