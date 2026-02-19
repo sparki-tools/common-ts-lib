@@ -1,16 +1,85 @@
 {
-  "name": "@sparki-tools/common",
-  "version": "0.0.1",
-  "description": "Shared TypeScript utilities for Sparki frontend",
+  "name": "@sparki/common-ts-lib",
+  "version": "0.1.0",
+  "description": "Shared TypeScript utilities for Sparki applications",
   "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "test": "vitest",
-    "lint": "eslint src/"
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "import": "./dist/utils/index.mjs",
+      "require": "./dist/utils/index.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.mjs",
+      "require": "./dist/types/index.js"
+    },
+    "./websocket": {
+      "types": "./dist/websocket/index.d.ts",
+      "import": "./dist/websocket/index.mjs",
+      "require": "./dist/websocket/index.js"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "import": "./dist/react/index.mjs",
+      "require": "./dist/react/index.js"
+    },
+    "./react/hooks": {
+      "types": "./dist/react/hooks/index.d.ts",
+      "import": "./dist/react/hooks/index.mjs",
+      "require": "./dist/react/hooks/index.js"
+    }
   },
-  "keywords": ["sparki", "utilities", "typescript"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "sparki",
+    "utilities",
+    "typescript",
+    "react-hooks",
+    "websocket"
+  ],
   "author": "Sparki Team",
   "license": "MIT",
-  "private": true
+  "private": false,
+  "sideEffects": false,
+  "dependencies": {
+    "clsx": "^2.1.0",
+    "tailwind-merge": "^2.2.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.2.45",
+    "react": "^18.2.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  }
 }

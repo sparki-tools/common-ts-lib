@@ -1,35 +1,114 @@
-# Common TypeScript Library
+# @sparki/common-ts-lib
 
-Shared TypeScript utilities for Sparki frontend applications.
+Shared TypeScript utilities for Sparki applications.
 
 ## Overview
 
-This library provides common utilities for Sparki frontend apps:
+This library provides common utilities, types, and React hooks for Sparki applications:
 
-- **api** - API client with request/response handling
-- **hooks** - Custom React hooks (useWebSocket, useAuth, etc.)
-- **types** - Shared TypeScript type definitions
-- **utils** - Utility functions (formatting, validation, etc.)
+- **utils** - Utility functions (cn, formatting, validation)
+- **types** - Shared TypeScript type definitions (ApiResponse, PaginationMeta, etc.)
+- **websocket** - WebSocket client for real-time communication
+- **react** - React hooks (useForm, useWebSocket, useClickOutside, etc.)
 
 ## Installation
 
 ```bash
-npm install @sparki-tools/common
+npm install @sparki/common-ts-lib
 ```
 
 ## Usage
 
+### Utils
+
 ```typescript
-import { api, useWebSocket, formatDate } from '@sparki-tools/common';
+import { cn, formatBytes, formatDate, formatRelativeTime, isValidEmail } from '@sparki/common-ts-lib/utils';
 
-// API client
-const projects = await api.projects.list();
+// Class name merging (Tailwind)
+const className = cn('base-class', condition && 'conditional-class');
 
-// WebSocket hook
-const { subscribe, send } = useWebSocket();
+// Formatting
+formatBytes(1024);           // "1 KB"
+formatDate(new Date());      // "01/15/2024, 10:30 AM"
+formatRelativeTime(date);    // "2 hours ago"
 
-// Utilities
-const formatted = formatDate(new Date());
+// Validation
+isValidEmail('test@example.com');  // true
+```
+
+### Types
+
+```typescript
+import type { ApiResponse, ApiError, PaginationMeta, PaginatedResponse } from '@sparki/common-ts-lib/types';
+
+interface MyData {
+  id: string;
+  name: string;
+}
+
+const response: ApiResponse<MyData> = {
+  success: true,
+  data: { id: '1', name: 'Test' },
+  timestamp: new Date().toISOString(),
+};
+```
+
+### WebSocket
+
+```typescript
+import { WebSocketClient, createWebSocketClient } from '@sparki/common-ts-lib/websocket';
+
+const client = createWebSocketClient('wss://api.example.com/ws');
+
+await client.connect();
+
+// Subscribe to a channel
+const unsubscribe = client.subscribe('notifications', (data) => {
+  console.log('Received:', data);
+});
+
+// Send a message
+client.send('chat', { message: 'Hello!' });
+
+// Cleanup
+client.disconnect();
+```
+
+### React Hooks
+
+```typescript
+import { 
+  useForm, 
+  useWebSocket, 
+  useClickOutside, 
+  useDebounce, 
+  useLocalStorage,
+  useMediaQuery 
+} from '@sparki/common-ts-lib/react/hooks';
+
+// Form management with validation
+const { values, errors, handleChange, handleSubmit } = useForm({
+  initialValues: { email: '', password: '' },
+  schema: loginSchema,
+  onSubmit: async (data) => {
+    await login(data);
+  },
+});
+
+// WebSocket connection
+const { isConnected, lastMessage, send } = useWebSocket('wss://api.example.com/ws');
+
+// Click outside detection
+const ref = useClickOutside(() => setIsOpen(false));
+
+// Debounced function
+const debouncedSearch = useDebounce(searchFn, 300);
+
+// Local storage state
+const [theme, setTheme] = useLocalStorage('theme', 'light');
+
+// Media query
+const isMobile = useMediaQuery('(max-width: 768px)');
 ```
 
 ## Directory Structure
@@ -37,26 +116,69 @@ const formatted = formatDate(new Date());
 ```
 common-ts-lib/
 ├── src/
-│   ├── api/            # API client
-│   ├── hooks/          # React hooks
+│   ├── utils/          # Utility functions
+│   │   ├── cn.ts       # Class name merging
+│   │   ├── format.ts   # Formatting utilities
+│   │   └── validation.ts
 │   ├── types/          # Type definitions
-│   └── utils/          # Utility functions
-├── tests/
+│   │   └── common.ts   # ApiResponse, PaginationMeta, etc.
+│   ├── websocket/      # WebSocket client
+│   │   └── client.ts
+│   └── react/          # React utilities
+│       └── hooks/      # Custom React hooks
+│           ├── useUI.ts
+│           ├── useForm.ts
+│           └── useWebSocket.ts
+├── dist/               # Compiled output
 ├── package.json
 └── README.md
 ```
 
-## Publishing
+## Exports
+
+The library provides multiple entry points for tree-shaking:
+
+```typescript
+// Everything
+import { cn, useForm, ApiResponse } from '@sparki/common-ts-lib';
+
+// Just utils
+import { cn, formatBytes } from '@sparki/common-ts-lib/utils';
+
+// Just types
+import type { ApiResponse, PaginationMeta } from '@sparki/common-ts-lib/types';
+
+// Just websocket
+import { WebSocketClient } from '@sparki/common-ts-lib/websocket';
+
+// Just React hooks
+import { useForm, useWebSocket } from '@sparki/common-ts-lib/react/hooks';
+```
+
+## Development
 
 ```bash
-npm version patch
-npm publish
+# Install dependencies
+npm install
+
+# Run type checking
+npm run typecheck
+
+# Build the library
+npm run build
+
+# Run tests
+npm test
+
+# Watch mode
+npm run dev
 ```
 
 ## Related Repositories
 
-- [web](https://github.com/sparki-tools/web)
-- [api-contracts](https://github.com/sparki-tools/api-contracts)
+- [web](https://github.com/sparki-tools/web) - Main web application
+- [api-contracts](https://github.com/sparki-tools/api-contracts) - API type definitions
+- [common-go-lib](https://github.com/sparki-tools/common-go-lib) - Go shared libraries
 
 ## License
 
