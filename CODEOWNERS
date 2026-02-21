@@ -1,0 +1,19 @@
+# CODEOWNERS for Common TypeScript Library
+
+* @sparki-tools/frontend-team
+
+# Public API
+/src/ @sparki-tools/frontend-team
+
+# CI/CD
+/.github/ @sparki-tools/frontend-team @sparki-tools/platform-team
+
+# Configuration
+.eslintrc* @sparki-tools/frontend-team
+.prettierrc* @sparki-tools/frontend-team
+tsconfig.json @sparki-tools/frontend-team
+.husky/ @sparki-tools/frontend-team @sparki-tools/platform-team
+renovate.json @sparki-tools/frontend-team @sparki-tools/platform-team
+
+# Documentation
+*.md @sparki-tools/frontend-team
