@@ -176,7 +176,7 @@ npm run dev
 
 ## Related Repositories
 
-- [web](https://github.com/sparki-tools/web) - Main web application
+- [web-app](https://github.com/sparki-tools/web-app) - Main web application
 - [api-contracts](https://github.com/sparki-tools/api-contracts) - API type definitions
 - [common-go-lib](https://github.com/sparki-tools/common-go-lib) - Go shared libraries
 

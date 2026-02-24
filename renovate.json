@@ -1,0 +1,44 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Sparki TypeScript Library - Renovate Configuration",
+  "extends": [
+    "local>sparki-tools/platform//.github/renovate-config.json"
+  ],
+  "enabledManagers": ["npm", "github-actions"],
+  "packageRules": [
+    {
+      "description": "Group ESLint packages",
+      "matchPackagePatterns": ["^eslint", "^@typescript-eslint"],
+      "groupName": "eslint"
+    },
+    {
+      "description": "Group Prettier packages",
+      "matchPackagePatterns": ["^prettier"],
+      "groupName": "prettier",
+      "automerge": true
+    },
+    {
+      "description": "Group testing libraries",
+      "matchPackagePatterns": ["^jest", "^@testing-library", "vitest"],
+      "groupName": "testing"
+    },
+    {
+      "description": "Group TypeScript packages",
+      "matchPackagePatterns": ["^typescript", "^@types/"],
+      "groupName": "typescript"
+    },
+    {
+      "description": "Auto-merge dev dependencies patch updates",
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true
+    },
+    {
+      "description": "Require approval for major updates (library consumers may break)",
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true,
+      "labels": ["breaking-change"]
+    }
+  ],
+  "postUpdateOptions": ["npmDedupe"]
+}
