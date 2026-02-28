@@ -3,6 +3,9 @@
  * Shared TypeScript utilities for Sparki applications
  */
 
+// Auth
+export * from './auth';
+
 // Utils
 export * from './utils';
 

@@ -3,7 +3,129 @@ import { twMerge } from 'tailwind-merge';
 import { useRef, useEffect, useCallback, useState } from 'react';
 import { z } from 'zod';
 
-// src/utils/cn.ts
+// src/auth/client.ts
+var AuthShieldClient = class {
+  constructor(baseUrl = "https://shield.sparki.tools") {
+    this.baseUrl = baseUrl;
+  }
+  /**
+   * Get the OAuth authorization URL for a provider
+   * @param provider - OAuth provider name (google, github, gitlab)
+   * @returns Promise with authorization URL
+   */
+  async getAuthorizationUrl(provider) {
+    try {
+      const response = await fetch(
+        `${this.baseUrl}/auth/oauth/${provider}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`Failed to get authorization URL: ${response.statusText}`);
+      }
+      const data = await response.json();
+      return data.authorization_url;
+    } catch (error) {
+      console.error(`Error getting authorization URL for ${provider}:`, error);
+      throw error;
+    }
+  }
+  /**
+   * Handle OAuth callback and exchange code for tokens
+   * The callback is handled server-side by auth-shield's /auth/oauth/callback endpoint
+   * @returns Promise with access and refresh tokens
+   */
+  async handleCallback() {
+    try {
+      const response = await fetch(`${this.baseUrl}/auth/oauth/callback`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      if (!response.ok) {
+        throw new Error(
+          `OAuth callback failed: ${response.statusText}`
+        );
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error handling OAuth callback:", error);
+      throw error;
+    }
+  }
+  /**
+   * Initiate OAuth login flow for a provider
+   * Redirects to OAuth provider's authorization URL
+   * @param provider - OAuth provider name (google, github, gitlab)
+   */
+  async login(provider) {
+    try {
+      const authUrl = await this.getAuthorizationUrl(provider);
+      window.location.href = authUrl;
+    } catch (error) {
+      console.error(`Login failed for ${provider}:`, error);
+      throw error;
+    }
+  }
+  /**
+   * Store tokens in localStorage
+   * @param tokens - Token response from auth-shield
+   */
+  storeTokens(tokens) {
+    if (typeof window === "undefined") return;
+    localStorage.setItem("access_token", tokens.access_token);
+    localStorage.setItem("refresh_token", tokens.refresh_token);
+    localStorage.setItem(
+      "token_expires_at",
+      String(Date.now() + tokens.expires_in * 1e3)
+    );
+  }
+  /**
+   * Get access token from storage
+   */
+  getAccessToken() {
+    if (typeof window === "undefined") return null;
+    return localStorage.getItem("access_token");
+  }
+  /**
+   * Get refresh token from storage
+   */
+  getRefreshToken() {
+    if (typeof window === "undefined") return null;
+    return localStorage.getItem("refresh_token");
+  }
+  /**
+   * Check if tokens are expired
+   */
+  isTokenExpired() {
+    if (typeof window === "undefined") return true;
+    const expiresAt = localStorage.getItem("token_expires_at");
+    if (!expiresAt) return true;
+    return Date.now() > parseInt(expiresAt, 10);
+  }
+  /**
+   * Clear all stored tokens
+   */
+  clearTokens() {
+    if (typeof window === "undefined") return;
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("token_expires_at");
+  }
+  /**
+   * Logout user by clearing tokens
+   */
+  logout() {
+    this.clearTokens();
+  }
+};
+var authShieldClient = new AuthShieldClient();
 function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
@@ -590,6 +712,6 @@ function useWebSocketListener(messageType, callback) {
   }, [messageType]);
 }
 
-export { MessageType, WebSocketClient, cn, createWebSocketClient, formatBytes, formatDate, formatDuration, formatRelativeTime, formatValidationError, isRequired, isValidEmail, isValidUrl, sanitizeInput, useClickOutside, useDebounce, useForm, useInView, useLocalStorage, useMediaQuery, useWebSocket, useWebSocketListener, validatePassword };
+export { AuthShieldClient, MessageType, WebSocketClient, authShieldClient, cn, createWebSocketClient, formatBytes, formatDate, formatDuration, formatRelativeTime, formatValidationError, isRequired, isValidEmail, isValidUrl, sanitizeInput, useClickOutside, useDebounce, useForm, useInView, useLocalStorage, useMediaQuery, useWebSocket, useWebSocketListener, validatePassword };
 //# sourceMappingURL=index.mjs.map
 //# sourceMappingURL=index.mjs.map
