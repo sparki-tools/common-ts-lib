@@ -24,9 +24,10 @@ declare class AuthShieldClient {
     /**
      * Get the OAuth authorization URL for a provider
      * @param provider - OAuth provider name (google, github, gitlab)
+     * @param redirectUrl - Optional URL to redirect to after OAuth callback with tokens
      * @returns Promise with authorization URL
      */
-    getAuthorizationUrl(provider: string): Promise<string>;
+    getAuthorizationUrl(provider: string, redirectUrl?: string): Promise<string>;
     /**
      * Handle OAuth callback and exchange code for tokens
      * The callback is handled server-side by auth-shield's /auth/oauth/callback endpoint
@@ -37,8 +38,9 @@ declare class AuthShieldClient {
      * Initiate OAuth login flow for a provider
      * Redirects to OAuth provider's authorization URL
      * @param provider - OAuth provider name (google, github, gitlab)
+     * @param redirectUrl - Optional URL to redirect to after OAuth callback with tokens as query params
      */
-    login(provider: string): Promise<void>;
+    login(provider: string, redirectUrl?: string): Promise<void>;
     /**
      * Store tokens in localStorage
      * @param tokens - Token response from auth-shield

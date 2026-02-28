@@ -23,19 +23,23 @@ export class AuthShieldClient {
   /**
    * Get the OAuth authorization URL for a provider
    * @param provider - OAuth provider name (google, github, gitlab)
+   * @param redirectUrl - Optional URL to redirect to after OAuth callback with tokens
    * @returns Promise with authorization URL
    */
-  async getAuthorizationUrl(provider: string): Promise<string> {
+  async getAuthorizationUrl(provider: string, redirectUrl?: string): Promise<string> {
     try {
-      const response = await fetch(
-        `${this.baseUrl}/auth/oauth/${provider}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const params = new URLSearchParams();
+      if (redirectUrl) {
+        params.append('redirect_url', redirectUrl);
+      }
+
+      const url = `${this.baseUrl}/auth/oauth/${provider}${params.toString() ? '?' + params.toString() : ''}`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
       if (!response.ok) {
         throw new Error(`Failed to get authorization URL: ${response.statusText}`);
@@ -81,10 +85,11 @@ export class AuthShieldClient {
    * Initiate OAuth login flow for a provider
    * Redirects to OAuth provider's authorization URL
    * @param provider - OAuth provider name (google, github, gitlab)
+   * @param redirectUrl - Optional URL to redirect to after OAuth callback with tokens as query params
    */
-  async login(provider: string): Promise<void> {
+  async login(provider: string, redirectUrl?: string): Promise<void> {
     try {
-      const authUrl = await this.getAuthorizationUrl(provider);
+      const authUrl = await this.getAuthorizationUrl(provider, redirectUrl);
       // Redirect to OAuth provider
       window.location.href = authUrl;
     } catch (error) {
