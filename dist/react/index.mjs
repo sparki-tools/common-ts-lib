@@ -16,7 +16,7 @@ function useClickOutside(callback) {
   return ref;
 }
 function useDebounce(callback, delay) {
-  const timeoutRef = useRef();
+  const timeoutRef = useRef(void 0);
   return useCallback(
     (...args) => {
       if (timeoutRef.current) {
