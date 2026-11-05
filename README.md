@@ -13,8 +13,10 @@ This library provides common utilities, types, and React hooks for Sparki applic
 
 ## Installation
 
+This package is not on the npm registry; install it from the git repo. Anything published to npm under this name is not ours.
+
 ```bash
-npm install @sparki/common-ts-lib
+npm install github:sparki-tools/common-ts-lib
 ```
 
 ## Usage
